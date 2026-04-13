@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/sequelize';
 import { EstilosService } from './estilos.service';
 import { Estilo } from './entities/estilo.entity';
+import { beforeEach, describe, it } from 'node:test';
 
 describe('EstilosService', () => {
   let service: EstilosService;

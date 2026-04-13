@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FilmesController } from './filmes.controller';
 import { FilmesService } from './filmes.service';
+import { beforeEach, describe, it } from 'node:test';
 
 const filmesServiceMock = {
   create: () => undefined,
