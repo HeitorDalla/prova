@@ -1,26 +1,46 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
 import { CreateFilmeDto } from './dto/create-filme.dto';
 import { UpdateFilmeDto } from './dto/update-filme.dto';
+import { Filme } from './entities/filme.entity';
+import { Estilo } from 'src/estilos/entities/estilo.entity';
 
 @Injectable()
 export class FilmesService {
-  create(createFilmeDto: CreateFilmeDto) {
-    return 'This action adds a new filme';
+  constructor(
+    @InjectModel(Filme)
+    private readonly filmeModel: typeof Filme,
+  ) {}
+
+  create(createFilmeDto: CreateFilmeDto): Promise<Filme> {
+    return this.filmeModel.create({ ...createFilmeDto } as Filme);
   }
 
-  findAll() {
-    return `This action returns all filmes`;
+  findAll(): Promise<Filme[]> {
+    return this.filmeModel.findAll({ include: [Estilo] });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} filme`;
+  async findOne(id: number): Promise<Filme> {
+    const filme = await this.filmeModel.findByPk(id, { include: [Estilo] });
+
+    if (!filme) {
+      throw new NotFoundException(`Filme com id ${id} nao encontrado`);
+    }
+
+    return filme;
   }
 
-  update(id: number, updateFilmeDto: UpdateFilmeDto) {
-    return `This action updates a #${id} filme`;
+  async update(id: number, updateFilmeDto: UpdateFilmeDto): Promise<Filme> {
+    const filme = await this.findOne(id);
+    await filme.update({ ...updateFilmeDto });
+
+    return filme;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} filme`;
+  async remove(id: number): Promise<{ message: string }> {
+    const filme = await this.findOne(id);
+    await filme.destroy();
+
+    return { message: 'Filme removido com sucesso' };
   }
 }

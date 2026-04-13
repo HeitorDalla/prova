@@ -2,13 +2,26 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FilmesController } from './filmes.controller';
 import { FilmesService } from './filmes.service';
 
+const filmesServiceMock = {
+  create: () => undefined,
+  findAll: () => undefined,
+  findOne: () => undefined,
+  update: () => undefined,
+  remove: () => undefined,
+};
+
 describe('FilmesController', () => {
   let controller: FilmesController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [FilmesController],
-      providers: [FilmesService],
+      providers: [
+        {
+          provide: FilmesService,
+          useValue: filmesServiceMock,
+        },
+      ],
     }).compile();
 
     controller = module.get<FilmesController>(FilmesController);
