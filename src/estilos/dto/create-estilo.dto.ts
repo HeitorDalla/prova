@@ -1,1 +1,3 @@
-export class CreateEstiloDto {}
+export class CreateEstiloDto {
+    nome!: string;
+}
